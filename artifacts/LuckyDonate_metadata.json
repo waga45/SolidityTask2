@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"LuckyDonate.sol": "LuckyDonate"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"LuckyDonate.sol": {
+			"keccak256": "0xd641976d0fb7ffc93e80447b8d585dfe77bf2fa2715a3ede0899b89356c21cfd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f2cbb2b94c9edb7e02db7fd736800d06bbd0c7d2259367d53a752ffc16098599",
+				"dweb:/ipfs/QmXCNAHh8eV6uXK4NjyZ6Er3976qRe94ag3HVqanFNxmyS"
+			]
+		}
+	},
+	"version": 1
+}

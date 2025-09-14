@@ -1,0 +1,13 @@
+作业一：WaGaToken 代币
+测试网合约地址：0xc7218177d3Ad806c1710EA6DfF5201eC9934BC77
+![WGT](imgs/WGToken(0xc7218177d3Ad806c1710EA6DfF5201eC9934BC77).png)
+
+
+作业二：StarNFT 合约
+测试网合约地址：0x2fA25a48EC6AaD35eEE66662d1bCDC0F601D5158
+继承ERC721协议实现NFT合约，实现铸造，体现等功能
+![StarNFT](imgs/StarNFT(0x2fA25a48EC6AaD35eEE66662d1bCDC0F601D5158).png)
+![StarNFT1](imgs/StarNFT.png)
+
+作业三：讨饭合约
+测试网合约地址：0x523fb9587708cebc87a99280c59b0a233f2a480e
