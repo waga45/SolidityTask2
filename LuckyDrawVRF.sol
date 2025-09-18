@@ -15,7 +15,7 @@ contract LuckyDrawVRF is VRFConsumerBaseV2Plus {
     //N个区块确认后再生成
     uint16 requestConfirmation =3;
     //回调gas费上限
-    uint32 callbackGasLimit = 100000;
+    uint32 callbackGasLimit = 500000;
     //随机个数
     uint32 numWords= 1;
     //轮数
@@ -23,7 +23,7 @@ contract LuckyDrawVRF is VRFConsumerBaseV2Plus {
     //记录  id-->活动详细
     mapping(uint256=>Join) records;
     //随机数请求id对应活动id--开奖才有
-    mapping(uint256=>uint256) public requestidToJoinId;
+    mapping(uint256=>VrfRequestToRandom) public requestMap;
     //是否有正在开奖
     uint8 hasProcessing=0;
     //最低价
@@ -32,7 +32,11 @@ contract LuckyDrawVRF is VRFConsumerBaseV2Plus {
     uint256 totalFee;
     //合约所有者
     address contractOwner;
-
+    //存储请求获取的随机数+活动ID
+    struct VrfRequestToRandom{
+        uint256 random;
+        uint256 luckyId;
+    }
     struct Join  {
         //开始时间
         uint256 startTime;
@@ -126,6 +130,7 @@ contract LuckyDrawVRF is VRFConsumerBaseV2Plus {
             //通知
             emit EventDrawWinnerSuccess(msg.sender, id, 0, block.timestamp);
         }else {
+            //nativePayment=true 使用eth代币  false 使用link币
             uint256 requestId = s_vrfCoordinator.requestRandomWords(
                     VRFV2PlusClient.RandomWordsRequest({
                         keyHash: keyHash,
@@ -138,25 +143,37 @@ contract LuckyDrawVRF is VRFConsumerBaseV2Plus {
                         )
                     })
                 );
-            requestidToJoinId[requestId]=id;
+            requestMap[requestId]=VrfRequestToRandom({
+                luckyId:id,
+                random:0
+            });
             emit EventDrawStart(msg.sender, id, requestId, block.timestamp);
         }
     }
 
-    //接收随机数
+    //接收随机数--这里不要写复杂逻辑 gas消耗量异常惊人  真正中奖逻辑需要单独触发
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
-        require(requestidToJoinId[requestId]>0, "not exist task");
-        uint256 id=requestidToJoinId[requestId];
-        Join storage currentDraw = records[id];
+        VrfRequestToRandom storage req= requestMap[requestId];
+        require(req.luckyId>0, "not exist task");
+        uint256 randomness = randomWords[0];
+        req.random=randomness;
+    }
+
+    //真正处理中奖业务需要单独出发
+    function afterDrawWinner(uint256 requestId) external {
+        VrfRequestToRandom memory req= requestMap[requestId];
+        require(req.luckyId>0, "not exist task");
+        require(req.random>0, "please pre call drawwinner");
+
+        Join storage currentDraw = records[req.luckyId];
         require(currentDraw.open==true,"current task has done");
         // 确保有参与者
         require(currentDraw.joinAddress.length > 0, "No participants");
-        uint256 randomness = randomWords[0];
         // 使用随机数选择获胜者
-        uint256 winnerIndex = randomness % currentDraw.joinAddress.length;
+        uint256 winnerIndex = req.random % currentDraw.joinAddress.length;
         address winner = currentDraw.joinAddress[winnerIndex];
         //计算手续费 rate
-        uint256 fee=currentDraw.totalReward*(ONE/100);
+        uint256 fee=(currentDraw.totalReward * 1e16)/ONE;
         totalFee+=fee;
         // 发送奖励给获胜者
         (bool success, ) = winner.call{value: (currentDraw.totalReward-fee)}("");
@@ -165,11 +182,10 @@ contract LuckyDrawVRF is VRFConsumerBaseV2Plus {
         currentDraw.winner = winner;
         currentDraw.open=false;
         hasProcessing=0;
-
         //通知
-        emit EventDrawWinnerSuccess(winner, id, requestId, block.timestamp);
+        emit EventDrawWinnerSuccess(winner, req.luckyId, requestId, block.timestamp);
     }
-
+  
     //获取活动信息
     function getOneLuckyInfo(uint256 luckyId) public view returns(
         uint256 startTime,

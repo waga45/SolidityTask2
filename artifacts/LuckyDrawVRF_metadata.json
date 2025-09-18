@@ -279,6 +279,19 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "requestId",
+						"type": "uint256"
+					}
+				],
+				"name": "afterDrawWinner",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "_startTime",
 						"type": "uint256"
 					},
@@ -473,11 +486,16 @@
 						"type": "uint256"
 					}
 				],
-				"name": "requestidToJoinId",
+				"name": "requestMap",
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "random",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "luckyId",
 						"type": "uint256"
 					}
 				],
@@ -636,11 +654,11 @@
 			]
 		},
 		"LuckyDrawVRF.sol": {
-			"keccak256": "0x099cdf1e31a48773e886543e5f1cd787fc5cbc699b0abc0b0ce83b170e1e44c9",
+			"keccak256": "0xce5339bc519cab3b3e5201df77395e5c25861f4f4d9c83d5a3cc95676cd00057",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://3c04ddc2b1ab99638f435f2cbfcdb5a31197093eb1f808cda33b899f0ae37784",
-				"dweb:/ipfs/QmUGrprNgRHPpdDkFLoic5WCUHfuEK5RVNNzsDgvxVTqbB"
+				"bzz-raw://8b85a815e4fac4332dc913fd79d6c150e7e90b9b670aa887edb337670efe8e27",
+				"dweb:/ipfs/QmStPHYecVUEEkhGWeM6UX5dCTEyfME4k2TaaDFxSmHcDu"
 			]
 		}
 	},
